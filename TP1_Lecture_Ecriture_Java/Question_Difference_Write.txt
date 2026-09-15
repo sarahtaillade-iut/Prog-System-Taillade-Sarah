@@ -1,0 +1,2 @@
+Q1) Quelle différence entre un write « tout » et plusieurs petits write ?
+Un write « tout » va être plus lourd dans sa tâche mais elle sera exécutée en une fois, tandis que plusieurs petits write vont faire plusieurs appels système qui vont arrêter continuellement le programme (principe d’ordonnancement). Il est préférable donc, de n’en mettre qu’un « tout ».
