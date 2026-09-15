@@ -1,6 +1,8 @@
-Main.java
-Image.java
-PPM.java
-FirstPPM.java
-Gradient.java
-Darker.java
+*.class
+*.jar
+*.o
+*.obj
+*.out
+*.exe
+*.a
+*.so
