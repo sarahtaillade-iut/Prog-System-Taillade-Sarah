@@ -5,6 +5,8 @@ public class TestRunner {
         testStep2();
         // Etape 3 : long et string 
         testStep3();
+		// Etape 4 : initialisation file system, superblock
+		testStep4();
     }
 
     public static void testStep2() {
