@@ -127,42 +127,33 @@ public class TestRunner {
 
     public static void testStep5() {
         System.out.println("=== TEST ÉTAPE 5 : Bitmap et Allocation ===");
-
         MemoryManager mm = new MemoryManager();
 
         assert mm.setBlockUsed(130, true) :
                 "setBlockUsed doit réussir";
-
         assert mm.isBlockUsed(130) == 1 :
                 "Le bloc 130 doit être occupé";
-
         assert mm.setBlockUsed(130, false) :
                 "La libération doit réussir";
-
         assert mm.isBlockUsed(130) == 0 :
                 "Le bloc 130 doit être libre";
-
         mm.setBlockUsed(129, true);
 
         int bitmapOffset =
                 MemoryManager.BITMAP_OFFSET + (129 / 8);
-
         assert (mm.getFilesystemMemory()[bitmapOffset]
                 & 0xFF) == 0x02 :
                 "Le bit du bloc 129 est incorrect";
-
         mm.setBlockUsed(130, true);
 
         assert (mm.getFilesystemMemory()[bitmapOffset]
                 & 0xFF) == 0x06 :
                 "Les bits 129 et 130 sont incorrects";
-
         mm.setBlockUsed(130, false);
 
         assert (mm.getFilesystemMemory()[bitmapOffset]
                 & 0xFF) == 0x02 :
                 "La libération du bloc 130 est incorrecte";
-
         MemoryManager mm2 = new MemoryManager();
 
         int first = mm2.allocateBlock();
