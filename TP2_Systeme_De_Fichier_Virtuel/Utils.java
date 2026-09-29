@@ -54,6 +54,9 @@ public class Utils {
         memory[offset + 5] = (byte)(value >> 16);
         memory[offset + 6] = (byte)(value >> 8);
         memory[offset + 7] = (byte)(value);
+        //Ou writeInt(mem, offset, (int)longVal)
+        //   writeInt(mem, offset32, (int)(longVal>>32))
+        
         // Retourne les 8 octets
         return 8;
     }
