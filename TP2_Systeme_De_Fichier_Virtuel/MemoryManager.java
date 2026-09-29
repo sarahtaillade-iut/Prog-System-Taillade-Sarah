@@ -62,11 +62,11 @@ public class MemoryManager {
         int offset = BITMAP_OFFSET + byteIndex;
 
         if (used) {
-            // TODO:
             // Positionner le bit à 1.
+            bitPosition = 1;
         } else {
-            // TODO:
             // Positionner le bit à 0.
+            bitPosition = 0;
         }
 
         return true;
