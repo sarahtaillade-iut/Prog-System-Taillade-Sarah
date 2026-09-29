@@ -9,6 +9,7 @@ public class TestRunner {
 	testStep4();
         // Etape 5 : Bitmap et allocation
         testStep5();
+
     }
 
     public static void testStep2() {
