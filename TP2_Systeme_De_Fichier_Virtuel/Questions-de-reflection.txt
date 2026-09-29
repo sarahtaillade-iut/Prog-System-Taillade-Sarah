@@ -1,0 +1,30 @@
+Question 1 : Représentation binaire
+Pourquoi est-il nécessaire de définir explicitement une convention telle que big-endian lorsqu’une 
+structure est stockée dans un tableau de byte ?
+
+Que se passerait-il si writeInt utilisait big-endian mais readInt supposait little-endian sur une 
+autre machine ?
+
+
+Question 2 : Signes et octets
+Pourquoi une opération telle que memory[offset] & 0xFF est-elle importante lors de la reconstruction 
+d’une valeur entière ? 
+
+Expliquez le rôle de l’opérateur binaire en Java.
+
+
+Question 3 : Sérialisation
+Pourquoi tester uniquement readInt(writeInt(x)) == x peut-il être insuffisant ? 
+Et si oui comment sampler correctement les valeurs de x ? 
+
+Expliquez en quoi l’inspection directe des octets permet de détecter davantage de classes d’erreurs.
+
+
+Question 4 : Bitmap
+Pourquoi un bitmap est-il plus compact qu’une représentation utilisant un entier par bloc ? 
+
+Exprimez la taille du bitmap en fonction du nombre de blocs.
+
+
+Question 5 : Layout
+... (à réaliser lorsque l'étape 5(ou plus) sera(seront) validée(s))
