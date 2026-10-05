@@ -50,4 +50,56 @@ public class MemoryManager {
     public byte[] getFilesystemMemory() {
         return memory;
     }
+
+    public boolean setBlockUsed(int blockNumber, boolean used) {
+        if (blockNumber < 0 ||
+            blockNumber >= NUM_BLOCKS) {
+            return false;
+        }
+
+        int byteIndex = blockNumber / 8;
+        int bitPosition = blockNumber % 8;
+        int offset = BITMAP_OFFSET + byteIndex;
+
+        if (used) {
+            // Positionner le bit à 1.
+            memory[offset] |= (1 << bitPosition);
+        } else {
+            // Positionner le bit à 0.
+            memory[offset] &= ~(1 << bitPosition);
+        }
+
+        return true;
+    }
+
+    public int isBlockUsed(int blockNumber) {
+
+        if (blockNumber < 0 ||
+            blockNumber >= NUM_BLOCKS) {
+            return -1;
+        }
+
+        // Calculer byteIndex.
+        // Calculer bitPosition.
+        // Lire le bit.
+	int byteIndex = blockNumber / 8;
+	int bitPosition = blockNumber % 8;
+	int offset = BITMAP_OFFSET + byteIndex;
+	int byteVal = memory[offset] & 0xFF;
+        return (byteVal & (1 << bitPosition)) != 0 ? 1 : 0;
+    }
+
+    public int allocateBlock() {
+
+        // Parcourir les blocs de données : 129 .. NUM_BLOCKS - 1.
+        // Retourner le premier bloc libre.
+        // Le marquer immédiatement comme utilisé.
+	for (int b = 129; b < NUM_BLOCKS; b++) {
+	    if (isBlockUsed(b) == 0) {
+	        setBlockUsed(b, true);
+		return b;
+	    }
+	}	
+        return -1;
+    }
 }
