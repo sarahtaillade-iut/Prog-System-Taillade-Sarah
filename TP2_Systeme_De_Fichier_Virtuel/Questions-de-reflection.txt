@@ -1,24 +1,43 @@
 Question 1 : Représentation binaire
 Pourquoi est-il nécessaire de définir explicitement une convention telle que big-endian lorsqu’une structure est stockée dans un tableau de byte ? Que se passerait-il si writeInt utilisait big-endian mais readInt supposait little-endian sur une autre machine ?
+(Un entier occupant 4 octets)
+Il faut fixer une convention pour savoir dans quel ordre les ranger dans le tableau de byte. Si une machine écrit en big-endian et qu'une autre lit en little-endian, l'ordre des octets sera inversé et la valeur lue sera donc erronée.
 
 Question 2 : Signes et octets
 Pourquoi une opération telle que memory[offset] & 0xFF est-elle importante lors de la reconstruction d’une valeur entière ? Expliquez le rôle de l’opéraateur binnaire en Java.
+L'opération & 0xFF est indispensable car le type byte est signé en Java. 
+Elle annule l'extension de signe pour convertir l'octet en une valeur positive (0 à 255). 
+L'opérateur & sert à conserver juste les bits à 1 présents aux mêmes positions dans les deux valeurs.
 
 Question 3 : Sérialisation
 Pourquoi tester uniquement readInt(writeInt(x)) == x peut-il être insuffisant ? Et si oui comment sampler correctement les valeurs de x ? Expliquez en quoi l’inspection directe des octets permet de détecter davantage de classes d’erreurs.
+Ce test est insuffisant car deux erreurs inverses dans writeInt et readInt peuvent se compenser et donc masquer un mauvais ordre d'octets.
+Pour corriger ca, il faut tester les valeurs limites, et contrôler directement le tableau d'octets pour valider l'offset et l'endianness.
 
 Question 4 : Bitmap
-Pourquoi un bitmap est-il plus compact qu’une représentation utilisant un entier par bloc ? Exprimez la taille du bitmap en fonction du nombre 
- de blocs.
+Pourquoi un bitmap est-il plus compact qu’une représentation utilisant un entier par bloc ? Exprimez la taille du bitmap en fonction du nombre de blocs.
+Le bitmap est plus compact car il n'utilise qu'1 bit par bloc, alors qu'un entier utilise 32 bits (4 octets) par bloc. 
+Sa taille s'exprime par (n block /8).
 
 Question 5 : Layout
 Pourquoi les structures du système de fichiers doivent-elles occuper des zones mémoire déterministes ? Que se passerait-il si la position du bitmap changeait sans que les méthodes qui l’utilisent soient modifiées ?
+Comme il n'y a pas de variables dans un tableau de byte, des adresses fixes sont obligatoires pour savoir exactement où se trouve chaque structure. 
+Si le bitmap bougeait, le système lirait n'importe quoi à sa place et corromprait tout le système de fichiers.
 
 Question 6 : Inode
 Pourquoi séparer les métadonnées du fichier de son contenu ? Expliquez pourquoi un inode peut être considéré comme une structure permettant de retrouver le contenu d’un fichier sans contenir directement ce contenu.
+La séparation permet de garder des métadonnées de taille fixe et rapide à parcourir, peu importe le poids du fichier.
+Un inode agit comme un index car il ne contient pas le texte ou les données du fichier, mais il stocke la liste des numéros de blocs dans lesquels le contenu est écrit.
 
 Question 7 : Allocation
 Pourquoi allocateBlock() doit-il commencer à rechercher à partir du bloc 129 ? Que se passerait-il si la recherche commençait au bloc 0 ?
+On commence au bloc 129 car les blocs 0 à 128 sont réservés au système. 
+Si on commençait au bloc 0, on écrirait les données des fichiers par-dessus le système et on détruirait tout.
 
 Question 8 : Fragmentation
 Deux systèmes peuvent-ils posséder exactement le même nombre de blocs libres mais présenter des niveaux de fragmentation différents ? Justifiez votre réponse avec une représentation sous forme de séquence de blocs libres et occupés.
+Oui, deux systèmes peuvent avoir le même nombre de blocs libres mais des niveaux de fragmentation différents. 
+Tout dépend de la répartition de ces blocs.
+Donc on a :
+Non fragmenté -> les blocs libres se suivent, le fichier reste en un bloc.
+Fragmenté -> les blocs libres sont dispersés, le fichier doit être découpé.

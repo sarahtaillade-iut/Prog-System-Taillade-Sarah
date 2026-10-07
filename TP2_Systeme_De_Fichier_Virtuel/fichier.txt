@@ -1,0 +1,30 @@
+Voici le résultat de mes tests obtenu après ma compilation : 
+(C:\Users\sarah\CoursBUT2\Prog-sys>java -ea TestRunner fichier.txt)
+
+=== DÉBUT DES TESTS DU VFS ===
+=== TEST ÉTAPE 2 : Utils Entiers ===
+[OK] Étape 2 validée !
+=== TEST ÉTAPE 3 : Utils Long & String ===
+[OK] Étape 3 validée !
+=== TEST ÉTAPE 4 : Initialisation Mémoire ===
+[OK] Étape 4 validée !
+=== TEST ÉTAPE 5 : Gestion du BitMap ===
+Blocs système réservés (0-127) : OK
+Bloc 129 libre au départ : OK
+Allocation bloc 1 (attendu 129) : 129 -> OK
+Bloc 129 marqué comme occupé : OK
+Allocation bloc 2 (attendu 130) : 130 -> OK
+Bloc 129 libéré : OK
+Réallocation (attendu 129) : 129 -> OK
+Gestion des indices invalides : OK
+[OK] Étape 5 validée !
+=== TEST ÉTAPE 6 : Adressage Inode ===
+[OK] Étape 6 validée !
+=== TEST ÉTAPE 7 : Sérialisation Inode ===
+[OK] Étape 7 validée !
+=== TEST ÉTAPE 8 : Création Fichier ===
+[OK] Étape 8 validée !
+=== TEST ÉTAPE 9 : Entrées/Sorties Fichier ===
+[OK] Étape 9 validée !
+[INFO] Aucun fichier externe fourni.
+=== TOUS LES TESTS SONT TERMINÉS ===

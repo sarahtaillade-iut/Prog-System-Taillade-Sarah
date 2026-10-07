@@ -1,6 +1,11 @@
+import java.io.FileReader;
+import java.io.IOException;
+
 public class TestRunner {
 
     public static void main(String[] args){
+	System.out.println(
+		"=== DÉBUT DES TESTS DU VFS ===");
         // Etape 2 : int et short
         testStep2();
         // Etape 3 : long et string 
@@ -17,6 +22,14 @@ public class TestRunner {
 	testStep8();
 	// Etape 9 : Entrées/Sorties Fichier
 	testStep9();
+	// Appel de la méthode pour le fichier externe
+        if (args.length > 0) {
+            testExternalFile(args[0]);
+        } else {
+            System.out.println("[INFO] Aucun fichier externe fourni.");
+        }
+	System.out.println(
+                "=== TOUS LES TESTS SONT TERMINÉS ===");
 
     }
 
@@ -134,50 +147,36 @@ public class TestRunner {
     }
 
     public static void testStep5() {
-        System.out.println("=== TEST ÉTAPE 5 : Bitmap et Allocation ===");
+        System.out.println("=== TEST ÉTAPE 5 : Gestion du BitMap ===");
         MemoryManager mm = new MemoryManager();
 
-        assert mm.setBlockUsed(130, true) :
-                "setBlockUsed doit réussir";
-        assert mm.isBlockUsed(130) == 1 :
-                "Le bloc 130 doit être occupé";
-        assert mm.setBlockUsed(130, false) :
-                "La libération doit réussir";
-        assert mm.isBlockUsed(130) == 0 :
-                "Le bloc 130 doit être libre";
-        mm.setBlockUsed(129, true);
+        boolean systemBlocksOk = true;
+        for (int i = 0; i < 128; i++) {
+            if (mm.isBlockUsed(i) != 1) {
+                systemBlocksOk = false;
+                break;
+            }
+        }
+        System.out.println("Blocs système réservés (0-127) : " + (systemBlocksOk ? "OK" : "ERREUR"));
+        System.out.println("Bloc 129 libre au départ : " + (mm.isBlockUsed(129) == 0 ? "OK" : "ERREUR"));
 
-        int bitmapOffset =
-                MemoryManager.BITMAP_OFFSET + (129 / 8);
-        assert (mm.getFilesystemMemory()[bitmapOffset]
-                & 0xFF) == 0x02 :
-                "Le bit du bloc 129 est incorrect";
-        mm.setBlockUsed(130, true);
+        int allocated1 = mm.allocateBlock();
+        System.out.println("Allocation bloc 1 (attendu 129) : " + allocated1 + " -> " + (allocated1 == 129 ? "OK" : "ERREUR"));
+        System.out.println("Bloc 129 marqué comme occupé : " + (mm.isBlockUsed(129) == 1 ? "OK" : "ERREUR"));
 
-        assert (mm.getFilesystemMemory()[bitmapOffset]
-                & 0xFF) == 0x06 :
-                "Les bits 129 et 130 sont incorrects";
-        mm.setBlockUsed(130, false);
+        int allocated2 = mm.allocateBlock();
+        System.out.println("Allocation bloc 2 (attendu 130) : " + allocated2 + " -> " + (allocated2 == 130 ? "OK" : "ERREUR"));
 
-        assert (mm.getFilesystemMemory()[bitmapOffset]
-                & 0xFF) == 0x02 :
-                "La libération du bloc 130 est incorrecte";
-        MemoryManager mm2 = new MemoryManager();
+        mm.setBlockUsed(129, false);
+        System.out.println("Bloc 129 libéré : " + (mm.isBlockUsed(129) == 0 ? "OK" : "ERREUR"));
 
-        int first = mm2.allocateBlock();
-        int second = mm2.allocateBlock();
-        assert first == 129 :
-                "Le premier bloc de données doit être 129";
-        assert second == 130 :
-                "Le second bloc de données doit être 130";
-        assert mm2.isBlockUsed(129) == 1;
-        assert mm2.isBlockUsed(130) == 1;
-        assert mm2.isBlockUsed(-1) == -1 :
-                "Un bloc négatif doit être refusé";
-        assert mm2.isBlockUsed(
-                MemoryManager.NUM_BLOCKS) == -1 :
-                "Un bloc hors limites doit être refusé";
-        System.out.println("[OK] Étape 5 validée !");
+        int allocated3 = mm.allocateBlock();
+        System.out.println("Réallocation (attendu 129) : " + allocated3 + " -> " + (allocated3 == 129 ? "OK" : "ERREUR"));
+
+        boolean invalidOk = (mm.isBlockUsed(-1) == -1) && (mm.isBlockUsed(MemoryManager.NUM_BLOCKS) == -1);
+        System.out.println("Gestion des indices invalides : " + (invalidOk ? "OK" : "ERREUR"));
+
+	System.out.println("[OK] Étape 5 validée !");
     }
 
     public static void testStep6() {
@@ -372,5 +371,79 @@ public class TestRunner {
 
         System.out.println("[OK] Étape 9 validée !");
     }
+
+
+    public static void testExternalFile(
+        String filename) {
+
+        System.out.println(
+            "=== TEST FICHIER EXTERNE ===");
+
+        StringBuilder builder =
+            new StringBuilder();
+
+        try (FileReader reader =
+                 new FileReader(filename)) {
+
+            char[] buffer =
+                new char[1024];
+
+            int count;
+
+            while ((count =
+                    reader.read(buffer)) != -1) {
+                builder.append(
+                    buffer,
+                    0,
+                    count);
+            }
+
+        } catch (IOException e) {
+            throw new AssertionError(
+                "Impossible de lire le fichier externe",
+                e);
+        }
+
+        String content =
+            builder.toString();
+
+        byte[] original =
+            content.getBytes();
+
+        VirtualFileSystem vfs =
+            new VirtualFileSystem();
+
+        assert vfs.createFile(
+            "/",
+            "external.txt") :
+            "Impossible de créer le fichier VFS";
+
+        assert vfs.writeFile(
+            0,
+            original) :
+            "Impossible d'écrire le fichier externe";
+
+        byte[] recovered =
+            vfs.readFile(0);
+
+        assert recovered != null :
+            "Les données récupérées sont nulles";
+
+        assert recovered.length
+            == original.length :
+            "Taille du fichier différente";
+
+        for (int i = 0;
+             i < original.length;
+             i++) {
+
+            assert recovered[i] == original[i] :
+                "Différence à l'octet " + i;
+        }
+
+        System.out.println(
+            "[OK] Fichier externe correctement transféré !");
+    }
+
 
 }

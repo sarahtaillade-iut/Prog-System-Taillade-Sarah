@@ -28,9 +28,9 @@ public class MemoryManager {
     private void initializeFilesystem() {
         writeSuperblock();
         // Réserver les blocs système 0 à 128.
-		for (int i = 0; i <= 128; i++){
-			setBlockUsed(i, true);
-		}
+	    for (int i = 0; i < 128; i++){
+		setBlockUsed(i, true);
+	    }
     }
 
     private void writeSuperblock() {
