@@ -22,7 +22,7 @@ public class Calcule extends Thread {
         // System.out.println("Traitement de " + valeur + " terminé : " + resultat);
     }
 
-    public getResultat() {
+    public long getResultat() {
         return resultat;
     }
 }
