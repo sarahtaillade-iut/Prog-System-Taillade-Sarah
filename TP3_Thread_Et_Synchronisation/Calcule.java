@@ -17,9 +17,8 @@ public class Calcule extends Thread {
         long resultat = 0;
         for (int j = 0; j < multiplicateur; j++) {
             resultat += valeur * valeur + valeur;
-                            // on pourrait aussi mettre un sleep
+            // on pourrait aussi mettre un sleep
         }
-
         // System.out.println("Traitement de " + valeur + " terminé : " + resultat);
     }
 
