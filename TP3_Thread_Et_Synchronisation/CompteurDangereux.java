@@ -1,7 +1,7 @@
 public class CompteurDangereux {
-    private static int compteurGlobal = 0;  // Variable partagée MODIFIABLE
+    private static int compteurGlobal = 0;
+    public static class Incrementeur implements Runnable {
 
-    static class Incrementeur implements Runnable {
         private final String nom;
         private final int nombreIncrements;
 
