@@ -1,0 +1,11 @@
+Question 1 : 
+La version parallèle permet de répartir la charge de travail sur plusieurs coeurs du processeur.
+Le temps de calcul pour chaque élément est super court. 
+Et la création et la gestion des threads font un "overhead". 
+Donc CalculParallele.java est préférable sir la charge de calcul est lourde.
+
+Question 2 : 
+Le résultat est le même que celui de CalculSequentiel.java. 
+Chaque thread travaille de manière indépendante (ou isolée) sur les variables locales et les attributs. 
+sommeTotal n'est pas modifiée en parallèle par les threads, elle est calculée de manière séquentielle par le thread principal quand tous les autres threads sont finis. 
+(méthode join()).
