@@ -1,3 +1,5 @@
+// Test compteur de base
+
 public class TestCompteur {
     private static final int NB_THREADS = 10;
     private static final int NB_TESTS = 50;
