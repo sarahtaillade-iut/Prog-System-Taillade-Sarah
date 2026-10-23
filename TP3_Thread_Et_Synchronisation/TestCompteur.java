@@ -1,12 +1,10 @@
-// Test compteur de base
-
 public class TestCompteur {
     private static final int NB_THREADS = 10;
     private static final int NB_TESTS = 50;
     private static final int INCREMENTS_PAR_THREAD = 100_000;
     private static final int VALEUR_ATTENDUE = NB_THREADS * INCREMENTS_PAR_THREAD;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         System.out.println("=== Test Compteur Dangereux ===");
 
         int minObserve = Integer.MAX_VALUE;
@@ -18,13 +16,23 @@ public class TestCompteur {
 
             Thread[] threads = new Thread[NB_THREADS];
 
+            // Création des threads
             for (int i = 0; i < NB_THREADS; i++) {
                 threads[i] = new Thread(new CompteurDangereux.Incrementeur("Thread-" + i, INCREMENTS_PAR_THREAD));
+            }
+
+            // Démarrage des threads
+            for (int i = 0; i < NB_THREADS; i++) {
                 threads[i].start();
             }
 
+            // Attente de la fin des threads avec gestion d'exception
             for (int i = 0; i < NB_THREADS; i++) {
-                threads[i].join();
+                try {
+                    threads[i].join();
+                } catch (InterruptedException e) {
+                    System.err.println("Thread interrompu : " + e.getMessage());
+                }
             }
 
             int obtenu = CompteurDangereux.getCompteur();
