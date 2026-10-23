@@ -1,0 +1,11 @@
+Ordre des acquire() :
+L'inversion crée un interblocage (deadlock). 
+Le thread bloque tout le buffer en attendant une place ou un élément libre, ce qui paralyse l'ensemble du système.
+
+Cohérence : 
+Ils s'équilibrent seulement s'il y a autant de productions que de consommations prévues. 
+Avec votre code, il faut exactement autant de producteurs que de consommateurs.
+
+Blocages : 
+Le système se bloque lors d'un deadlock ou d'un nombre d'opérations Inégal. 
+Des producteurs en trop restent bloqués sur un buffer plein, et des consommateurs en trop sur un buffer vide
